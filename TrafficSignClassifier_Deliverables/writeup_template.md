@@ -20,7 +20,7 @@ The goals / steps of this project are the following:
 
 [image1]: ./Dataset.jpg "Distribution over the different signs"
 [image2]: ./Preprocessing.jpg "Before and After Preprocessing"
-[image3]: ./examples/random_noise.jpg "Random Noise"
+[image3]: ./CNN_Architecture.jpg "CNN Architecture"
 [image4]: ./sign1.jpg "Traffic Sign 1"
 [image5]: ./sign2.jpg "Traffic Sign 2"
 [image6]: ./sign3.jpg "Traffic Sign 3"
@@ -96,27 +96,21 @@ I also decided to use sigmoid as activation function to minimze the number of de
 ####4. Describe the approach taken for finding a solution and getting the validation set accuracy to be at least 0.93. Include in the discussion the results on the training, validation and test sets and where in the code these were calculated. Your approach may have been an iterative process, in which case, outline the steps you took to get to the final solution and why you chose those steps. Perhaps your solution involved an already well known implementation or architecture. In this case, discuss why you think the architecture is suitable for the current problem.
 
 As mentioned above, I've used the architecture from the LeNeT lab to start with. It has 3 convolutional layers + 3 fully connected layers.
+
 1- I've seen a significant drop in the accuracy during the training (after 5-6 EPOCHS drops from 0.80-0.900 to 0.050-0.060) I suspected from underfitting.
+
 2- I decided to increase the number of filter layers to increase the efficiency and prevent underfitting.
+
 3- As I did not want to explode the memory and/or computational effort, I start increasing the number of filter depth, hence the size of the entire network.
+
 4- After a number of iterations, accuracy reached the expected levels, however, I observed some flactutation that was preventing a reliable accuracy above 0.93. I decided to save the parameters for each iteration that yields a better accuracy.
 
 My final model results were:
 * training set accuracy of 
 * validation set accuracy of 0.933 
-* test set accuracy of ?
+* test set accuracy of 0.898
 
-If an iterative approach was chosen:
-* What was the first architecture that was tried and why was it chosen?
-* What were some problems with the initial architecture?
-* How was the architecture adjusted and why was it adjusted? Typical adjustments could include choosing a different model architecture, adding or taking away layers (pooling, dropout, convolution, etc), using an activation function or changing the activation function. One common justification for adjusting an architecture would be due to overfitting or underfitting. A high accuracy on the training set but low accuracy on the validation set indicates over fitting; a low accuracy on both sets indicates under fitting.
-* Which parameters were tuned? How were they adjusted and why?
-* What are some of the important design choices and why were they chosen? For example, why might a convolution layer work well with this problem? How might a dropout layer help with creating a successful model?
 
-If a well known architecture was chosen:
-* What architecture was chosen?
-* Why did you believe it would be relevant to the traffic sign application?
-* How does the final model's accuracy on the training, validation and test set provide evidence that the model is working well?
  
 
 ###Test a Model on New Images
