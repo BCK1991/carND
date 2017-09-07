@@ -140,7 +140,7 @@ As mentioned above, I've used the architecture from the LeNeT lab to start with.
 5- Maybe one important design change was to use Sigmoid activation function instead of ReLu to minimize dead neurons. (mentioned above).
 
 My final model results were:
-* training set accuracy of 
+* training set accuracy of 0.994
 * validation set accuracy of 0.933 
 * test set accuracy of 0.898
 
@@ -175,7 +175,7 @@ The ninth one might be difficult to classify due to low resolution as the middle
 
 Let's remember the all the results:
 
-* training set accuracy
+* training set accuracy 0.994
 * validation set accuracy of 0.933 
 * test set accuracy of 0.898
 * new images set accuracy of 0.889
