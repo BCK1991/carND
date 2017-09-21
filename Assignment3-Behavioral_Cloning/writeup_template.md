@@ -79,7 +79,7 @@ The model was trained and validated on different data sets to ensure that the mo
 ![alt text][image1]
 ![alt text][image2]
 ![alt text][image3]
-![alt text][image3]
+![alt text][image4]
 
 The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
 
@@ -154,7 +154,7 @@ To capture good driving behavior, I first recorded two laps on track one using c
 
 
 
-I then also included left and right camera images so that the vehicle would learn to recovery when it goes out of the track. These images are from left and the right cameras:
+I then also included left and right camera images so that the vehicle would learn to recovery when it goes out of the track. These images are from left and the right cameras (not the same part of the circuit):
 
 
 ![alt text][image8]
