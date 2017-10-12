@@ -15,6 +15,13 @@ The goals / steps of this project are the following:
 * Warp the detected lane boundaries back onto the original image.
 * Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position.
 
+Deliverables:
+
+* AdvancedLaneFinding.ipynb - Solution notebook 
+* project_video_result.mp4 - Final video
+* camera calibration images, test images, markdown images and markdown
+
+
 [//]: # (Image References)
 
 [image1]: ./P1_Undist_Chess.jpg "Undisturbed Chess Board"
