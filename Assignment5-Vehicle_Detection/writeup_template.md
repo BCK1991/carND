@@ -10,16 +10,23 @@ The goals / steps of this project are the following:
 * Estimate a bounding box for vehicles detected.
 
 [//]: # (Image References)
-[image1]: ./P1-Car_NonCar.JPG "Car and NonCar Examples"
-[image2]: ./P2-HogFeaturesVis.JPG "HOG Features from RGB ch0"
-[image30]: ./P3-HogFeaturesHLS-ch0.JPG "HOG Features from HLS ch0"
-[image31]: ./P3-HogFeaturesHLS-ch1.JPG "HOG Features from HLS ch0"
-[image32]: ./P3-HogFeaturesHLS-ch2.JPG "HOG Features from HLS ch0"
-[image4]: ./examples/sliding_window.jpg
-[image5]: ./examples/bboxes_and_heat.png
-[image6]: ./examples/labels_map.png
-[image7]: ./examples/output_bboxes.png
-[video1]: ./project_video.mp4
+[image1]: ./mk_images/P1-Car_NonCar.JPG "Car and NonCar Examples"
+[image2]: ./mk_images/P2-HogFeaturesVis.JPG "HOG Features from RGB ch0"
+[image3]: ./mk_images/P1-Car_NonCar.JPG "Car and NonCar Examples"
+[image30]: ./mk_images/P3-HogFeaturesHLS-ch0.JPG "HOG Features from HLS ch0"
+[image31]: ./mk_images/P3-HogFeaturesHLS-ch1.JPG "HOG Features from HLS ch0"
+[image32]: ./mk_images/P3-HogFeaturesHLS-ch2.JPG "HOG Features from HLS ch0"
+[image40]: ./mk_images/P5-FindCars1.JPG
+[image41]: ./mk_images/P5-FindCars2.JPG
+[image42]: ./mk_images/P5-FindCars3.JPG
+[image50]: ./mk_images/p7-FrameSeries0.JPG
+[image51]: ./mk_images/p7-FrameSeries1.JPG
+[image52]: ./mk_images/p7-FrameSeries2.JPG
+[image53]: ./mk_images/p7-FrameSeries3.JPG
+[image54]: ./mk_images/p7-FrameSeries4.JPG
+[image55]: ./mk_images/p7-FrameSeries5.JPG
+
+
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/513/view) Points
 ###Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
@@ -51,6 +58,7 @@ Here is an example using the `RGB` color space using only channel0[R] and HOG pa
 
 Here is an example using the `HLS` color space and HOG parameters of `orientations=9`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
 
+![alt text][image3]
 ![alt text][image30]
 ![alt text][image31]
 ![alt text][image32]
@@ -84,38 +92,54 @@ For these 10 labels:  [ 0.  0.  0.  1.  0.  1.  0.  1.  0.  1.]
 
 ####1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
 
-I decided to search random window positions at random scales all over the image and came up with this (ok just kidding I didn't actually ;):
+I decided to search different sizes of windows at different positions with different scaling factors over the image. Here is a table that summarizes the parameters for 'find_cars' function that is at the lines 219-312. Sliding window loops can be find at lines 263-301. The window size is fixed as 64x64 and cells per step (sliding rate) is 4 cells (since cells per block is 8, it corresponds to 50%).
 
-![alt text][image3]
+| | range0 | range1 | range2 | range3 |
+|-|--------|--------|--------|-------|
+| y_start | 450 | 400 | 400 | 380 |
+| y_stop | 642 | 592 | 560 | 508 |
+| scale | 2.5 | 2 | 1.5 | 1 |
+
+
 
 ####2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
-Ultimately I searched on two scales using YCrCb 3-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result.  Here are some example images:
+Ultimately I searched on four scales using HLS 3-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result.  Here are some example images:
 
-![alt text][image4]
+![alt text][image40]
+
+
+![alt text][image41]
+
+
+![alt text][image42]
 ---
 
 ### Video Implementation
 
 ####1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (somewhat wobbly or unstable bounding boxes are ok as long as you are identifying the vehicles most of the time with minimal false positives.)
-Here's a [link to my video result](./project_video.mp4)
+Here's a [link to my video result](./project_video_output.mp4)
 
 
 ####2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
 
 I recorded the positions of positive detections in each frame of the video.  From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions.  I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap.  I then assumed each blob corresponded to a vehicle.  I constructed bounding boxes to cover the area of each blob detected.  
 
-Here's an example result showing the heatmap from a series of frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video:
+Here's an example result showing the heatmap from a series of frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on them:
 
-### Here are six frames and their corresponding heatmaps:
+### Here are six frames with resulting bounding boxes (combined), labels and their corresponding heatmaps:
 
-![alt text][image5]
+![alt text][image50]
+![alt text][image51]
+![alt text][image52]
+![alt text][image53]
+![alt text][image54]
+![alt text][image55]
 
-### Here is the output of `scipy.ndimage.measurements.label()` on the integrated heatmap from all six frames:
-![alt text][image6]
 
-### Here the resulting bounding boxes are drawn onto the last frame in the series:
-![alt text][image7]
+
+
+
 
 
 
@@ -125,5 +149,11 @@ Here's an example result showing the heatmap from a series of frames of video, t
 
 ####1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
-Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
+I think it was a really fun and challenging project which makes it a good final project for the term-1.
+
+Personally, the most challenging part of the project was to find proper features to be used and good parameters that'd give good results. I spent good amount of time to play around with the parameters and color spaces. Also, since the number of functions used throughout the project was significanlty higher then the previous projects, I needed to follow a bit more systematic way to not make a spagetthi out of the project. I hope it is still readable.
+
+I made use of forum many times throughout the project, unlike the previous ones and I realized it is a strong community which is maybe the most valuable tool for solving the technical problem.
+
+I think the result could be improved especially in terms of the tracking boxes. I realized it was not an easy task to put threshold that both prevents false positives and still captures vehicles without hick-ups. I am planning to spend some more time on the parameters and try to get better performance. Another way would be to add more hog features by using different color spaces and fine tune the sliding window algorithm which I thought would be too much for the purpose of the project. 
 
