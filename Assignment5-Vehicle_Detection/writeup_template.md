@@ -10,9 +10,11 @@ The goals / steps of this project are the following:
 * Estimate a bounding box for vehicles detected.
 
 [//]: # (Image References)
-[image1]: ./examples/car_not_car.png
-[image2]: ./examples/HOG_example.jpg
-[image3]: ./examples/sliding_windows.jpg
+[image1]: ./P1-Car_NonCar.JPG "Car and NonCar Examples"
+[image2]: ./P2-HogFeaturesVis.JPG "HOG Features from RGB ch0"
+[image30]: ./P3-HogFeaturesHLS-ch0.JPG "HOG Features from HLS ch0"
+[image31]: ./P3-HogFeaturesHLS-ch1.JPG "HOG Features from HLS ch0"
+[image32]: ./P3-HogFeaturesHLS-ch2.JPG "HOG Features from HLS ch0"
 [image4]: ./examples/sliding_window.jpg
 [image5]: ./examples/bboxes_and_heat.png
 [image6]: ./examples/labels_map.png
@@ -33,26 +35,50 @@ You're reading it!
 
 ####1. HOG Features
 
-The code for this step is contained in lines 116-137 'get_hog_features' and lines 248-277 within the main vehicle detection function 'find_cars' of the file 'LessonFunctions.py' 
+The code for this step is contained in lines 116-137 'get_hog_features' of the file 'LessonFunctions.py' 
 
 I started by reading in all the `vehicle` and `non-vehicle` images.  Here is an example of one of each of the `vehicle` and `non-vehicle` classes:
 
 ![alt text][image1]
 
-I then explored different color spaces in my playground (code is not attached here) and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`).  I grabbed random images from each of the two classes and displayed them to get a feel for what the `skimage.hog()` output looks like.
+I then explored different color spaces in my playground and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`).  I grabbed random images from each of the two classes and displayed them to get a feel for what the `skimage.hog()` output looks like.
 
-Here is an example using the `YCrCb` color space and HOG parameters of `orientations=8`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
+Here is an example using the `RGB` color space using only channel0[R] and HOG parameters of `orientations=9`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
 
 
 ![alt text][image2]
 
+
+Here is an example using the `HLS` color space and HOG parameters of `orientations=9`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
+
+![alt text][image30]
+![alt text][image31]
+![alt text][image32]
+
+
 ####2. Explain how you settled on your final choice of HOG parameters.
 
-I tried various combinations of parameters and...
+I tried various combinations of parameters and I tried to picked RGB to start with since from the visualization I found that one quite promising. However, after I finalize the pipeline, I tried more color spaces (with all 3 channels) and observed that HLS gives the best performance for the project video in hand. Eventually, the HOG parameters I used can be listed as follows:
+
+*cell_per_block = 2
+*pixels_per_cel = 8
+*orient = 9
+*hog_channel = 'ALL'
+*colorspace = 'HLS'
 
 ####3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
-I trained a linear SVM using...
+I trained a linear SVM using a feature vector composed of spatial, color histogram and hog features. I used a data set of images composed of 5966 car and 5068 non-car images that are 64x64 color images. I divided the data set into two (0.8 for training, 0.2 for testing).
+
+Here are some statistics from the classifier:
+
+*Using spatial binning of: 32 and histogram bins of: 32
+Feature vector length: 8460
+24.4 Seconds to train SVC...
+Test Accuracy of SVC =  0.9973
+My SVC predicts:  [ 0.  0.  0.  1.  0.  1.  0.  1.  0.  1.]
+For these 10 labels:  [ 0.  0.  0.  1.  0.  1.  0.  1.  0.  1.]
+0.015 Seconds to predict 10 labels with SVC*
 
 ###Sliding Window Search
 
