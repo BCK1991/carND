@@ -216,50 +216,6 @@ class LF:
         return features
     
     
-    def slide_window(img, x_start_stop=[None, None], y_start_stop=[None, None], 
-                    xy_window=(64, 64), xy_overlap=(0.5, 0.5)):
-        # If x and/or y start/stop positions not defined, set to image size
-        if x_start_stop[0] == None:
-            x_start_stop = list(x_start_stop)
-            x_start_stop[0] = 0
-        if x_start_stop[1] == None:
-            x_start_stop[1] = int(img.shape[1])
-        if y_start_stop[0] == None:
-            y_start_stop = list(y_start_stop)
-            y_start_stop[0] = int(img.shape[0]/2)
-        if y_start_stop[1] == None:
-            y_start_stop[1] = img.shape[0]
-        # Compute the span of the region to be searched    
-        xspan = x_start_stop[1] - x_start_stop[0]
-        yspan = y_start_stop[1] - y_start_stop[0]
-        # Compute the number of pixels per step in x/y
-        nx_pix_per_step = np.int(xy_window[0]*(1 - xy_overlap[0]))
-        ny_pix_per_step = np.int(xy_window[1]*(1 - xy_overlap[1]))
-        # Compute the number of windows in x/y
-        nx_buffer = np.int(xy_window[0]*(xy_overlap[0]))
-        ny_buffer = np.int(xy_window[1]*(xy_overlap[1]))
-        nx_windows = np.int((xspan-nx_buffer)/nx_pix_per_step) 
-        ny_windows = np.int((yspan-ny_buffer)/ny_pix_per_step) 
-        # Initialize a list to append window positions to
-        window_list = []
-        # Loop through finding x and y window positions
-        # Note: you could vectorize this step, but in practice
-        # you'll be considering windows one by one with your
-        # classifier, so looping makes sense
-        for ys in range(ny_windows):
-            for xs in range(nx_windows):
-                # Calculate window position
-                startx = xs*nx_pix_per_step + x_start_stop[0]
-                endx = startx + xy_window[0]
-                starty = ys*ny_pix_per_step + y_start_stop[0]
-                endy = starty + xy_window[1]
-
-                # Append window position to list
-                window_list.append(((startx, starty), (endx, endy)))
-        # Return the list of windows
-        return window_list
-    
-    
     def find_cars(img, ystart, ystop, scale, svc, X_scaler, hog_channel,
                   orient, pix_per_cell, cell_per_block, spatial_size, hist_bins,
                   xstart=0, xstop=1280, color_space='RGB'):
@@ -393,6 +349,8 @@ class LF:
         
         # Return the image
         return img
+    
+    
     ## single image vehicle detection
     def process_image_VD(svc, X_scaler):
         
@@ -421,11 +379,24 @@ class LF:
                                                  spatial_size,
                                                  histbin,
                                                 color_space=color_space)
-            
+
             out_img, range_2_box_list = LF.find_cars(image,
-                                                     LF.y_start[2],
-                                                     LF.y_stop[2],
-                                                     LF.img_scale[2],
+                                                 LF.y_start[2],
+                                                 LF.y_stop[2],
+                                                 LF.img_scale[2],
+                                                 svc, X_scaler,
+                                                 'ALL',
+                                                 orient,
+                                                 pixels_per_cel,
+                                                 cell_per_block,
+                                                 spatial_size,
+                                                 histbin,
+                                                color_space=color_space)
+
+            out_img, range_1_box_list = LF.find_cars(image,
+                                                  LF.y_start[1],
+                                                  LF.y_stop[1],
+                                                  LF.img_scale[1],
                                                   svc, X_scaler,
                                                   'ALL',
                                                   orient,
@@ -433,20 +404,20 @@ class LF:
                                                   cell_per_block,
                                                   spatial_size,
                                                   histbin,
-                                                  color_space=color_space)
-            
-            out_img, range_1_box_list = LF.find_cars(image,
-                                              LF.y_start[1],
-                                              LF.y_stop[1],
-                                              LF.img_scale[1],
-                                                   svc, X_scaler,
-                                                   'ALL',
-                                                   orient,
-                                                   pixels_per_cel,
-                                                   cell_per_block,
-                                                   spatial_size,
-                                                   histbin,
-                                                   color_space=color_space)
+                                                 color_space=color_space)
+
+            out_img, range_0_box_list = LF.find_cars(image,
+                                                     LF.y_start[0],
+                                                     LF.y_stop[0],
+                                                     LF.img_scale[0],
+                                                     svc, X_scaler,
+                                                     'ALL',
+                                                     orient,
+                                                     pixels_per_cel,
+                                                     cell_per_block,
+                                                     spatial_size,
+                                                     histbin,
+                                                     color_space=color_space)
 
             # combine box list from all ranges
             box_list = range_3_box_list + range_2_box_list + range_1_box_list
@@ -573,10 +544,25 @@ class LF:
 
         # Visualize the heatmap when displaying
         heatmap = np.clip(heat, 0, 255)
+        
 
         # Find final boxes from heatmap using label function
         labels = label(heatmap)
+        
         draw_img = LF.draw_labeled_bboxes(np.copy(image), labels)
+        
+       # fig = plt.figure()
+       # plt.subplot(131)
+       # plt.imshow(draw_img)
+       # plt.title('Car Positions')
+       # plt.subplot(132)
+       # plt.imshow(labels[0], cmap='gray')
+       # plt.title('Labels')
+       # plt.subplot(133)
+       # plt.imshow(heatmap, cmap='hot')
+       # plt.title('Heat Map')
+       # fig.tight_layout()
+       # plt.show()
 
         # Return the image with the detected vehicles
         return draw_img
